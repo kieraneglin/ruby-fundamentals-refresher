@@ -34,6 +34,26 @@ class Restaurant
 
   end
 
+  def self.build_using_questions
+    puts "\nAdd a restaurant".upcase
+    args = {}
+    print "Restaurant name: "
+    args[:name] = gets.chomp.strip
+    print "Cuisine type: "
+    args[:cuisine] = gets.chomp.strip
+    print "Average price: "
+    args[:price] = gets.chomp.strip
+
+    self.new args
+  end
+
+  def initialize(args={})
+    @name = args[:name]    || ""
+    @cuisine = args[:cuisine] || ""
+    @price = args[:price]   || ""
+  end
+
+
   def save
     return false unless Restaurant.file_usable?
     File.open(@@filepath, 'a') do |file|
