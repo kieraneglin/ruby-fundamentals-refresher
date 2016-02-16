@@ -1,6 +1,13 @@
 require 'restaurant'
 class Guide
 
+  class Config
+    @@actions = ['list', 'find', 'add', 'quit']
+    def self.actions
+      @@actions
+    end
+  end
+
   def initialize(path=nil)
     Restaurant.filepath = path
     if Restaurant.file_usable?
@@ -16,10 +23,56 @@ class Guide
   def launch!
     introduction
 
-    print "> "
-    user_response = gets.chomp
-
+    result = nil
+    until result == :quit
+      action = get_action
+      result = do_action(action)
+    end
     conclusion
+  end
+
+  def get_action
+    action = nil
+    until Guide::Config.actions.include?(action)
+      puts "Actions: " + Guide::Config.actions.join(', ') if action
+      print "> "
+      user_response = gets.chomp
+      action = user_response.downcase.strip
+    end
+    return action
+  end
+
+  def do_action(action)
+    case action
+    when 'list'
+      puts 'Listing...'
+    when 'find'
+      puts 'Finding'
+    when 'add'
+      add
+    when 'quit'
+      return :quit
+    else
+      puts 'I dont understand that'
+    end
+  end
+
+  def add
+    puts "\nAdd a restaurant".upcase
+    rest = Restaurant.new
+
+    print "Restaurant name: "
+    rest.name = gets.chomp.strip
+    print "Cuisine type: "
+    rest.cuisine = gets.chomp.strip
+    print "Average price: "
+    rest.price = gets.chomp.strip
+
+    if rest.save
+      puts 'Saved'
+    else
+      puts 'error'
+    end
   end
 
   def introduction
