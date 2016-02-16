@@ -5,7 +5,9 @@ class Guide
   end
 
   def launch!
+    introduction
 
+    conclusion
   end
 
   def introduction
