@@ -1,1 +1,2 @@
 Hot Tamale	Mexican	25
+Taco Bell	Mexican	5

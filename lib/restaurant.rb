@@ -1,4 +1,6 @@
+require 'support/number_helper'
 class Restaurant
+  include NumberHelper
 
   @@filepath = nil
   def self.filepath=(path=nil)
@@ -31,11 +33,19 @@ class Restaurant
   end
 
   def self.saved_restaurants
+    rest = []
+    if file_usable?
+      file = File.new(@@filepath, 'r')
+      file.each_line do |line|
 
+        rest << Restaurant.new.import_line(line.chomp)
+      end
+      file.close
+    end
+    return rest
   end
 
   def self.build_using_questions
-    puts "\nAdd a restaurant".upcase
     args = {}
     print "Restaurant name: "
     args[:name] = gets.chomp.strip
@@ -53,6 +63,11 @@ class Restaurant
     @price = args[:price]   || ""
   end
 
+  def import_line(line)
+    line_array = line.split("\t")
+    @name, @cuisine, @price = line_array
+    return self
+  end
 
   def save
     return false unless Restaurant.file_usable?
@@ -60,6 +75,10 @@ class Restaurant
       file.puts "#{[@name, @cuisine, @price].join("\t")}\n"
     end
     return true
+  end
+
+  def formatted_price
+    number_to_currency(@price)
   end
 
 end
